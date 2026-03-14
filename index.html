@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurman Gym Pro - Master</title>
+    <title>Sun Fitness Xpert - Gym Manager</title>
     <style>
         :root { --primary: #1a2a6c; --whatsapp: #25D366; --bg: #f4f7f6; --danger: #e74c3c; --info: #3498db; --success: #27ae60; --sheet: #1D6F42; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
         .container { max-width: 1400px; margin: auto; }
         .tabs { display: flex; background: #fff; border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; color: #888; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; color: #888; transition: 0.3s; }
         .tab.active { background: var(--primary); color: white; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; }
         input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
         button:disabled { background: #ccc; cursor: not-allowed; }
         .hidden { display: none; }
         .month-nav { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
         .month-pill { background: #fff; border: 1px solid #ddd; padding: 8px 18px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; font-weight: bold; color: #555; }
         .month-pill.active { background: var(--primary); color: white; }
         .scroll-table { overflow-x: auto; max-height: 450px; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; position: sticky; top: 0; z-index: 10; color: var(--primary); font-size: 11px; text-transform: uppercase; }
         .badge-today { background: #fee2e2; color: #991b1b; border: 1px solid #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-        .btn-action { width: auto; padding: 6px 12px; font-size: 11px; border-radius: 4px; border: none; color: white; cursor: pointer; }
-        .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .btn-action { width: auto; padding: 6px 12px; font-size: 11px; border-radius: 4px; border: none; color: white; cursor: pointer; margin-right: 2px; }
         #id-warning { color: var(--danger); font-size: 11px; font-weight: bold; display: none; margin-bottom: 5px; }
     </style>
 </head>
@@ -44,7 +43,7 @@
             <div>
                 <label style="font-size:11px; font-weight:bold;">ID *</label>
                 <input type="text" id="memNo" oninput="checkDuplicateID()" required>
-                <div id="id-warning">⚠️ ID already assigned!</div>
+                <div id="id-warning">⚠️ ID assigned!</div>
             </div>
         </div>
         <input type="text" id="name" placeholder="Full Name" required>
@@ -76,8 +75,8 @@
             <div class="month-nav" id="monthNav"></div>
 
             <div id="alertPanel" style="background: #fff5f5; border: 2px solid #feb2b2; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                <div class="alert-header">
-                    <h3 style="color:#9b2c2c">🚨 Renewals Forecast</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="color:#9b2c2c; margin:0;">🚨 Renewals Forecast</h3>
                     <input type="date" id="forecastDate" style="width:auto; padding:5px;" onchange="renderAdmin()">
                 </div>
                 <div class="scroll-table"><table><thead><tr><th>NAME</th><th>ID</th><th>EXPIRY</th><th>ACTION</th></tr></thead><tbody id="alertBody"></tbody></table></div>
@@ -126,11 +125,11 @@
     }
 
     function checkDuplicateID() {
-        const idInput = document.getElementById('memNo').value;
+        const idInput = document.getElementById('memNo').value.trim();
         const warning = document.getElementById('id-warning');
         const saveBtn = document.getElementById('saveBtn');
         if (editContext || isRenewalMode) { warning.style.display = 'none'; saveBtn.disabled = false; return; }
-        const isDuplicate = cloudData.some(m => m.memNo.toString().trim() === idInput.toString().trim());
+        const isDuplicate = cloudData.some(m => m.memNo.toString().trim() === idInput);
         warning.style.display = (isDuplicate && idInput !== "") ? 'block' : 'none';
         saveBtn.disabled = (isDuplicate && idInput !== "");
     }
@@ -199,7 +198,7 @@
             if(!dObj || !eObj) return;
 
             const dateMatch = dObj.getMonth() === selectedMonth && dObj.getFullYear() === selectedYear;
-            const sheetMatch = m.cleanSheetName === `${targetMonthName} ${selectedYear}`;
+            const sheetMatch = m.cleanSheetName && m.cleanSheetName.toLowerCase().includes(targetMonthName.toLowerCase());
 
             if(dateMatch || sheetMatch) {
                 monthTotal += parseFloat(m.amount || 0);
@@ -217,9 +216,15 @@
             if(dObj.toDateString() === todayStr) todayTotal += parseFloat(m.amount || 0);
 
             if(latest[m.memNo].rowId === m.rowId && eObj.toDateString() === fDateStr) {
+                const profMsg = `Hello! This is a reminder from Sun Fitness Xpert Gym. Your membership is scheduled to expire today. To ensure uninterrupted access to the facility, please renew your membership at the desk. Thank you!`;
+                const waLink = m.contact ? `https://wa.me/91${m.contact.toString().replace(/\D/g,'')}?text=${encodeURIComponent(profMsg)}` : "#";
+
                 alertBody.innerHTML += `<tr>
                     <td><b>${m.name}</b></td><td>${m.memNo}</td><td><span class="badge-today">${formatDateDisplay(m.expiry)}</span></td>
-                    <td><button class="btn-action" style="background:var(--success)" onclick="renewFromAdmin('${m.memNo}')">Renew</button></td>
+                    <td>
+                        <button class="btn-action" style="background:var(--success)" onclick="renewFromAdmin('${m.memNo}')">Renew</button>
+                        <button class="btn-action" style="background:#25D366" onclick="window.open('${waLink}', '_blank')">💬 Remind</button>
+                    </td>
                 </tr>`;
             }
         });
