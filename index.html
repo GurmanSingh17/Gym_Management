@@ -48,13 +48,20 @@
         </div>
         <input type="text" id="name" placeholder="Full Name" required>
         <input type="text" id="contact" placeholder="WhatsApp Number" required>
-        <select id="package" onchange="updateExpiryPreview()" required>
-            <option value="">-- Choose Package --</option>
-            <option value="1">1 Month</option>
-            <option value="3">3 Months</option>
-            <option value="6">6 Months</option>
-            <option value="12">12 Months</option>
-        </select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <select id="package" onchange="updateExpiryPreview()" required>
+                <option value="">-- Choose Package --</option>
+                <option value="1">1 Month</option>
+                <option value="3">3 Months</option>
+                <option value="6">6 Months</option>
+                <option value="12">12 Months</option>
+            </select>
+            <select id="payMode" required>
+                <option value="">-- Payment Mode --</option>
+                <option value="Cash">Cash</option>
+                <option value="Online">Online</option>
+            </select>
+        </div>
         <input type="number" id="amt" placeholder="Fee Amount (₹)" required>
         <div id="expiryPreview" style="text-align:center; font-weight:bold; color:var(--primary); background: #eef2ff; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px dashed var(--primary);"></div>
         <button onclick="saveToCloud()" id="saveBtn">Save Record</button>
@@ -241,9 +248,10 @@
             name: document.getElementById('name').value, 
             memNo: document.getElementById('memNo').value,
             package: document.getElementById('package').value, 
+            payMode: document.getElementById('payMode').value,
             amount: document.getElementById('amt').value, 
             contact: document.getElementById('contact').value,
-            expiry: updateExpiryPreview(), payMode: 'Cloud'
+            expiry: updateExpiryPreview()
         };
         document.getElementById('status').innerText = "Syncing...";
         await fetch(CLOUD_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
@@ -255,6 +263,7 @@
         editContext = { rowId, sheetName }; isRenewalMode = false;
         document.getElementById('name').value = m.name; document.getElementById('memNo').value = m.memNo;
         document.getElementById('contact').value = m.contact; document.getElementById('package').value = m.package;
+        document.getElementById('payMode').value = m.payMode || "";
         document.getElementById('amt').value = m.amount; document.getElementById('date').value = new Date(m.date).toISOString().split('T')[0];
         switchTab('reg');
     }
@@ -264,6 +273,7 @@
         editContext = null; isRenewalMode = true;
         document.getElementById('name').value = m.name; document.getElementById('memNo').value = m.memNo;
         document.getElementById('contact').value = m.contact; document.getElementById('package').value = m.package;
+        document.getElementById('payMode').value = ""; // Reset for new payment
         document.getElementById('amt').value = m.amount; document.getElementById('date').valueAsDate = new Date();
         updateExpiryPreview(); switchTab('reg');
     }
@@ -282,7 +292,7 @@
 
     function resetForm() {
         editContext = null; isRenewalMode = false;
-        ['name', 'memNo', 'amt', 'contact', 'package'].forEach(id => document.getElementById(id).value = '');
+        ['name', 'memNo', 'amt', 'contact', 'package', 'payMode'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('date').valueAsDate = new Date();
     }
 
