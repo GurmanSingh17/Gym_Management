@@ -1,302 +1,1202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sun Fitness Xpert - Gym Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
-        :root { --primary: #1a2a6c; --whatsapp: #25D366; --bg: #f4f7f6; --danger: #e74c3c; --info: #3498db; --success: #27ae60; --sheet: #1D6F42; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 1400px; margin: auto; }
-        .tabs { display: flex; background: #fff; border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; color: #888; transition: 0.3s; }
-        .tab.active { background: var(--primary); color: white; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        .hidden { display: none; }
-        .month-nav { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
-        .month-pill { background: #fff; border: 1px solid #ddd; padding: 8px 18px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; font-weight: bold; color: #555; }
-        .month-pill.active { background: var(--primary); color: white; }
-        .scroll-table { overflow-x: auto; max-height: 450px; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f9fa; position: sticky; top: 0; z-index: 10; color: var(--primary); font-size: 11px; text-transform: uppercase; }
-        .badge-today { background: #fee2e2; color: #991b1b; border: 1px solid #991b1b; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-        .btn-action { width: auto; padding: 6px 12px; font-size: 11px; border-radius: 4px; border: none; color: white; cursor: pointer; margin-right: 2px; }
-        #id-warning { color: var(--danger); font-size: 11px; font-weight: bold; display: none; margin-bottom: 5px; }
+      :root {
+        --primary: #1a2a6c;
+        --whatsapp: #25d366;
+        --bg: #f4f7f6;
+        --danger: #e74c3c;
+        --info: #3498db;
+        --success: #27ae60;
+        --sheet: #1d6f42;
+        --pdf: #c0392b;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        margin: 0;
+        padding: 10px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: auto;
+      }
+
+      .tabs {
+        display: flex;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        font-weight: bold;
+        color: #888;
+        transition: 0.3s;
+      }
+
+      .tab.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .month-nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px 0;
+        margin-bottom: 15px;
+        scrollbar-width: none;
+      }
+
+      .month-pill {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 8px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      .month-pill.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .scroll-table {
+        overflow-x: auto;
+        max-height: 450px;
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        background: white;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background: #f8f9fa;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        color: var(--primary);
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+
+      .badge-today {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #991b1b;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+      }
+
+      .btn-action {
+        width: auto;
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 4px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        margin-right: 2px;
+      }
+
+      #id-warning {
+        color: var(--danger);
+        font-size: 11px;
+        font-weight: bold;
+        display: none;
+        margin-bottom: 5px;
+      }
+
+      .btn-pdf {
+        background-color: var(--pdf) !important;
+        margin-bottom: 10px;
+      }
+
+      .admin-subtabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .admin-subtab {
+        width: auto;
+        padding: 10px 18px;
+        background: #e2e8f0;
+        color: #334155;
+        border-radius: 999px;
+      }
+
+      .admin-subtab.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .summary-box {
+        background: #f0f4ff;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .muted-note {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: -2px;
+        margin-bottom: 10px;
+      }
+
+      .link-btn {
+        color: var(--info);
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      .danger-btn {
+        background: var(--danger);
+      }
+
+      @media (max-width: 768px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
 
-<div class="container">
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('reg')" id="t-reg">Registration Desk</div>
-        <div class="tab" onclick="switchTab('admin')" id="t-admin">Admin Analytics</div>
-    </div>
+  <body>
+    <div class="container">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('reg')" id="t-reg">
+          Registration Desk
+        </div>
+        <div class="tab" onclick="switchTab('admin')" id="t-admin">
+          Admin Analytics
+        </div>
+      </div>
 
-    <div id="regView" class="card">
+      <div id="regView" class="card">
         <h2 id="formTitle">Register / Re-joining</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div><label style="font-size:11px; font-weight:bold;">Date *</label><input type="date" id="date" required></div>
-            <div>
-                <label style="font-size:11px; font-weight:bold;">ID *</label>
-                <input type="text" id="memNo" oninput="checkDuplicateID()" required>
-                <div id="id-warning">⚠️ ID assigned!</div>
-            </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <div>
+            <label style="font-size: 11px; font-weight: bold">Date *</label
+            ><input type="date" id="date" required />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: bold">ID *</label>
+            <input
+              type="text"
+              id="memNo"
+              oninput="checkDuplicateID()"
+              required
+            />
+            <div id="id-warning">⚠️ ID assigned!</div>
+          </div>
         </div>
-        <input type="text" id="name" placeholder="Full Name" required>
-        <input type="text" id="contact" placeholder="WhatsApp Number" required>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <select id="package" onchange="updateExpiryPreview()" required>
-                <option value="">-- Choose Package --</option>
-                <option value="1">1 Month</option>
-                <option value="3">3 Months</option>
-                <option value="6">6 Months</option>
-                <option value="12">12 Months</option>
-            </select>
-            <select id="payMode" required>
-                <option value="">-- Payment Mode --</option>
-                <option value="Cash">Cash</option>
-                <option value="Online">Online</option>
-            </select>
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input
+          type="text"
+          id="contact"
+          placeholder="WhatsApp Number"
+          required
+        />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+          <select id="package" onchange="updateExpiryPreview()" required>
+            <option value="">-- Choose Package --</option>
+            <option value="1">1 Month</option>
+            <option value="3">3 Months</option>
+            <option value="6">6 Months</option>
+            <option value="12">12 Months</option>
+          </select>
+          <select id="payMode" required>
+            <option value="">-- Payment Mode --</option>
+            <option value="Cash">Cash</option>
+            <option value="Online">Online</option>
+          </select>
         </div>
-        <input type="number" id="amt" placeholder="Fee Amount (₹)" required>
-        <div id="expiryPreview" style="text-align:center; font-weight:bold; color:var(--primary); background: #eef2ff; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px dashed var(--primary);"></div>
+        <input type="number" id="amt" placeholder="Fee Amount (₹)" required />
+        <div
+          id="expiryPreview"
+          style="
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            background: #eef2ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px dashed var(--primary);
+          "
+        ></div>
         <button onclick="saveToCloud()" id="saveBtn">Save Record</button>
-        <button onclick="resetForm()" style="background:#64748b; margin-top:5px;">Clear Form</button>
-        <p id="status" style="text-align:center; font-weight:bold;"></p>
-    </div>
+        <button
+          onclick="resetForm()"
+          style="background: #64748b; margin-top: 5px"
+        >
+          Clear Form
+        </button>
+        <p id="status" style="text-align: center; font-weight: bold"></p>
+      </div>
 
-    <div id="adminView" class="hidden">
+      <div id="adminView" class="hidden">
         <div class="card">
-            <button onclick="window.open('https://docs.google.com/spreadsheets/d/1jvkCBt9AlhrfdpRsIie8fB5lfLncM4nQnj3xpbGBx9s/edit?usp=sharing', '_blank')" 
-                style="background-color: var(--sheet); margin-bottom: 20px;">📊 View Google Sheet (Cloud Database)</button>
+          <div class="admin-subtabs">
+            <button
+              class="admin-subtab active"
+              id="adminAnalyticsTab"
+              onclick="switchAdminSection('analytics')"
+            >
+              Income Analytics
+            </button>
+            <button
+              class="admin-subtab"
+              id="adminExpensesTab"
+              onclick="switchAdminSection('expenses')"
+            >
+              Expense Records
+            </button>
+          </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div style="background: #f0f4ff; padding: 15px; border-radius: 10px; text-align: center;"><span id="monthNameLabel">Month</span> Total<br><b id="monthCol" style="color:green; font-size:22px;">₹0</b></div>
-                <div style="background: #f0f4ff; padding: 15px; border-radius: 10px; text-align: center;">Today's Total<br><b id="todayCol" style="color:#1a2a6c; font-size:22px;">₹0</b></div>
+          <div id="analyticsSection">
+            <button
+              onclick="
+                window.open(
+                  'https://docs.google.com/spreadsheets/d/1jvkCBt9AlhrfdpRsIie8fB5lfLncM4nQnj3xpbGBx9s/edit?usp=sharing',
+                  '_blank',
+                )
+              "
+              style="background-color: var(--sheet); margin-bottom: 10px"
+            >
+              View Google Sheet (Cloud Database)
+            </button>
+            <button onclick="downloadRenewalPDF()" class="btn-pdf">
+              Download Monthly Renewal List (PDF)
+            </button>
+
+            <div class="summary-grid">
+              <div class="summary-box">
+                <span id="monthNameLabel">Month</span> Total<br /><b
+                  id="monthCol"
+                  style="color: green; font-size: 22px"
+                  >Rs. 0</b
+                >
+              </div>
+              <div class="summary-box">
+                Today's Total<br /><b
+                  id="todayCol"
+                  style="color: #1a2a6c; font-size: 22px"
+                  >Rs. 0</b
+                >
+              </div>
             </div>
 
             <div class="month-nav" id="monthNav"></div>
 
-            <div id="alertPanel" style="background: #fff5f5; border: 2px solid #feb2b2; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="color:#9b2c2c; margin:0;">🚨 Renewals Forecast</h3>
-                    <input type="date" id="forecastDate" style="width:auto; padding:5px;" onchange="renderAdmin()">
-                </div>
-                <div class="scroll-table"><table><thead><tr><th>NAME</th><th>ID</th><th>EXPIRY</th><th>ACTION</th></tr></thead><tbody id="alertBody"></tbody></table></div>
-            </div>
-
-            <input type="text" id="search" placeholder="🔍 Search Filter (Name or ID)..." onkeyup="renderAdmin()" style="margin-bottom: 15px; border: 2px solid var(--primary);">
-            <div class="scroll-table">
+            <div
+              id="alertPanel"
+              style="
+                background: #fff5f5;
+                border: 2px solid #feb2b2;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 20px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 10px;
+                "
+              >
+                <h3 style="color: #9b2c2c; margin: 0">Renewals Forecast</h3>
+                <input
+                  type="date"
+                  id="forecastDate"
+                  style="width: auto; padding: 5px"
+                  onchange="renderAdmin()"
+                />
+              </div>
+              <div class="scroll-table">
                 <table>
-                    <thead><tr><th>Date</th><th>Name</th><th>ID</th><th>Pkg</th><th>Amt</th><th>Contact</th><th>Expiry</th><th>Actions</th></tr></thead>
-                    <tbody id="memberListBody"></tbody>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>ID</th>
+                      <th>Expiry</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="alertBody"></tbody>
                 </table>
+              </div>
             </div>
+
+            <input
+              type="text"
+              id="search"
+              placeholder="Search by name or ID..."
+              onkeyup="renderAdmin()"
+              style="margin-bottom: 15px; border: 2px solid var(--primary)"
+            />
+            <div class="scroll-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Pkg</th>
+                    <th>Amt</th>
+                    <th>Contact</th>
+                    <th>Expiry</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="memberListBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="expensesSection" class="hidden">
+            <div class="form-grid">
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Expense Date *</label
+                >
+                <input type="date" id="expenseDate" />
+              </div>
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Amount (Rs.) *</label
+                >
+                <input
+                  type="number"
+                  id="expenseAmount"
+                  placeholder="Expense Amount"
+                />
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Expense Head *</label
+                >
+                <input
+                  type="text"
+                  id="expenseTitle"
+                  placeholder="Electricity Bill / Equipment / Cleaning"
+                />
+              </div>
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Payment Mode *</label
+                >
+                <select id="expensePayMode">
+                  <option value="">-- Payment Mode --</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Online">Online</option>
+                  <option value="Card">Card</option>
+                  <option value="UPI">UPI</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Category</label
+                >
+                <select id="expenseCategory">
+                  <option value="General">General</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Equipment">Equipment</option>
+                  <option value="Staff">Staff</option>
+                  <option value="Marketing">Marketing</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 11px; font-weight: bold"
+                  >Upload Bill</label
+                >
+                <input type="file" id="expenseBill" accept="image/*,.pdf" />
+              </div>
+            </div>
+
+            <div class="muted-note">
+              Bill upload is optional. Uploaded bills are currently stored only
+              in this browser.
+            </div>
+
+            <button onclick="saveExpense()">Save Expense</button>
+            <button
+              onclick="resetExpenseForm()"
+              style="background: #64748b; margin-top: 5px"
+            >
+              Clear Expense Form
+            </button>
+            <p
+              id="expenseStatus"
+              style="text-align: center; font-weight: bold"
+            ></p>
+
+            <div class="summary-grid">
+              <div class="summary-box">
+                <span id="expenseMonthNameLabel">Month</span> Expense<br /><b
+                  id="expenseMonthTotal"
+                  style="color: var(--danger); font-size: 22px"
+                  >Rs. 0</b
+                >
+              </div>
+              <div class="summary-box">
+                Today's Expense<br /><b
+                  id="expenseTodayTotal"
+                  style="color: #b45309; font-size: 22px"
+                  >Rs. 0</b
+                >
+              </div>
+              <div class="summary-box">
+                Net Collection<br /><b
+                  id="netCollectionTotal"
+                  style="color: var(--success); font-size: 22px"
+                  >Rs. 0</b
+                >
+              </div>
+            </div>
+
+            <div class="month-nav" id="expenseMonthNav"></div>
+            <input
+              type="text"
+              id="expenseSearch"
+              placeholder="Search expense head or category..."
+              onkeyup="renderExpenses()"
+              style="margin-bottom: 15px; border: 2px solid var(--danger)"
+            />
+            <div class="scroll-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Head</th>
+                    <th>Category</th>
+                    <th>Mode</th>
+                    <th>Amount</th>
+                    <th>Bill</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="expenseListBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<script>
-    const CLOUD_URL = 'https://script.google.com/macros/s/AKfycbwWsk3sz0TQ9_N-FK_p80E8gMNjdYFftTANUKEPHJvNm6c0JfgGvpTOpZpkTKedc-zddw/exec'; 
-    
-    let cloudData = [];
-    let editContext = null;
-    let isRenewalMode = false;
-    let selectedMonth = new Date().getMonth();
-    let selectedYear = new Date().getFullYear();
+    <script>
+      const CLOUD_URL =
+        "https://script.google.com/macros/s/AKfycbwWsk3sz0TQ9_N-FK_p80E8gMNjdYFftTANUKEPHJvNm6c0JfgGvpTOpZpkTKedc-zddw/exec";
+      const EXPENSE_STORAGE_KEY = "gymExpenses";
 
-    document.getElementById('date').valueAsDate = new Date();
-    document.getElementById('forecastDate').valueAsDate = new Date();
+      let cloudData = [];
+      let expenseData = [];
+      let editContext = null;
+      let isRenewalMode = false;
+      let selectedMonth = new Date().getMonth();
+      let selectedYear = new Date().getFullYear();
 
-    function parseAnyDate(dateStr) {
+      document.getElementById("date").valueAsDate = new Date();
+      document.getElementById("forecastDate").valueAsDate = new Date();
+      document.getElementById("expenseDate").valueAsDate = new Date();
+
+      function parseAnyDate(dateStr) {
         if (!dateStr) return null;
         if (dateStr instanceof Date) return dateStr;
-        let d;
-        if (typeof dateStr === 'string' && dateStr.includes('/')) {
-            const parts = dateStr.split('/');
-            d = new Date(parts[2], parts[0] - 1, parts[1]);
-        } else {
-            d = new Date(dateStr);
+        if (typeof dateStr === "string" && dateStr.includes("/")) {
+          const parts = dateStr.split("/");
+          return new Date(parts[2], parts[0] - 1, parts[1]);
         }
-        return d;
-    }
+        return new Date(dateStr);
+      }
 
-    function formatDateDisplay(dateStr) {
+      function formatDateDisplay(dateStr) {
         const dObj = parseAnyDate(dateStr);
         if (!dObj || isNaN(dObj)) return dateStr;
-        return `${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}/${dObj.getFullYear()}`;
-    }
+        return `${String(dObj.getDate()).padStart(2, "0")}/${String(dObj.getMonth() + 1).padStart(2, "0")}/${dObj.getFullYear()}`;
+      }
 
-    function checkDuplicateID() {
-        const idInput = document.getElementById('memNo').value.trim();
-        const warning = document.getElementById('id-warning');
-        const saveBtn = document.getElementById('saveBtn');
-        if (editContext || isRenewalMode) { warning.style.display = 'none'; saveBtn.disabled = false; return; }
-        const isDuplicate = cloudData.some(m => m.memNo.toString().trim() === idInput);
-        warning.style.display = (isDuplicate && idInput !== "") ? 'block' : 'none';
-        saveBtn.disabled = (isDuplicate && idInput !== "");
-    }
+      function formatCurrency(value) {
+        return "Rs. " + Number(value || 0).toLocaleString("en-IN");
+      }
 
-    function buildMonthNav() {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const nav = document.getElementById('monthNav'); nav.innerHTML = '';
-        months.forEach((m, i) => {
-            const btn = document.createElement('div');
-            btn.className = `month-pill ${i === selectedMonth ? 'active' : ''}`;
-            btn.innerText = m;
-            btn.onclick = () => { selectedMonth = i; buildMonthNav(); renderAdmin(); };
-            nav.appendChild(btn);
-        });
-    }
-
-    async function fetchFromCloud() {
-        try {
-            const res = await fetch(CLOUD_URL);
-            cloudData = await res.json();
-            renderAdmin();
-        } catch (e) { console.error("Sync Error"); }
-    }
-
-    function switchTab(t) {
-        if(t === 'admin') {
-            const pin = prompt("Admin PIN:");
-            if(pin !== "1234") return;
-            fetchFromCloud();
+      function checkDuplicateID() {
+        const idInput = document.getElementById("memNo").value.trim();
+        const warning = document.getElementById("id-warning");
+        const saveBtn = document.getElementById("saveBtn");
+        if (editContext || isRenewalMode) {
+          warning.style.display = "none";
+          saveBtn.disabled = false;
+          return;
         }
-        document.getElementById('regView').classList.toggle('hidden', t !== 'reg');
-        document.getElementById('adminView').classList.toggle('hidden', t !== 'admin');
-        document.getElementById('t-reg').classList.toggle('active', t === 'reg');
-        document.getElementById('t-admin').classList.toggle('active', t === 'admin');
-    }
+        const isDuplicate = cloudData.some(
+          (m) => m.memNo.toString().trim() === idInput,
+        );
+        warning.style.display =
+          isDuplicate && idInput !== "" ? "block" : "none";
+        saveBtn.disabled = isDuplicate && idInput !== "";
+      }
 
-    function renderAdmin() {
-        const listBody = document.getElementById('memberListBody');
-        const alertBody = document.getElementById('alertBody');
-        const query = document.getElementById('search').value.toLowerCase();
-        const fDateVal = document.getElementById('forecastDate').value;
-        const fDateObj = parseAnyDate(fDateVal); fDateObj.setHours(0,0,0,0);
-        const fDateStr = fDateObj.toDateString();
+      function buildMonthNav() {
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        ["monthNav", "expenseMonthNav"].forEach((navId) => {
+          const nav = document.getElementById(navId);
+          nav.innerHTML = "";
+          months.forEach((m, i) => {
+            const btn = document.createElement("div");
+            btn.className = `month-pill ${i === selectedMonth ? "active" : ""}`;
+            btn.innerText = m;
+            btn.onclick = () => {
+              selectedMonth = i;
+              buildMonthNav();
+              renderAdmin();
+              renderExpenses();
+            };
+            nav.appendChild(btn);
+          });
+        });
+      }
 
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      function switchAdminSection(section) {
+        const isAnalytics = section === "analytics";
+        document
+          .getElementById("analyticsSection")
+          .classList.toggle("hidden", !isAnalytics);
+        document
+          .getElementById("expensesSection")
+          .classList.toggle("hidden", isAnalytics);
+        document
+          .getElementById("adminAnalyticsTab")
+          .classList.toggle("active", isAnalytics);
+        document
+          .getElementById("adminExpensesTab")
+          .classList.toggle("active", !isAnalytics);
+        if (!isAnalytics) renderExpenses();
+      }
+
+      function loadExpenses() {
+        try {
+          expenseData = JSON.parse(
+            localStorage.getItem(EXPENSE_STORAGE_KEY) || "[]",
+          );
+        } catch (e) {
+          expenseData = [];
+        }
+      }
+
+      function saveExpensesToStorage() {
+        localStorage.setItem(EXPENSE_STORAGE_KEY, JSON.stringify(expenseData));
+      }
+
+      function readBillFile(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) {
+            resolve(null);
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () =>
+            resolve({
+              name: file.name,
+              dataUrl: reader.result,
+              type: file.type,
+            });
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function fetchFromCloud() {
+        try {
+          const res = await fetch(CLOUD_URL);
+          cloudData = await res.json();
+          renderAdmin();
+        } catch (e) {
+          console.error("Sync Error", e);
+          renderAdmin();
+        }
+      }
+
+      function switchTab(t) {
+        if (t === "admin") {
+          const pin = prompt("Admin PIN:");
+          if (pin !== "1234") return;
+          loadExpenses();
+          fetchFromCloud();
+          renderExpenses();
+        }
+        document
+          .getElementById("regView")
+          .classList.toggle("hidden", t !== "reg");
+        document
+          .getElementById("adminView")
+          .classList.toggle("hidden", t !== "admin");
+        document
+          .getElementById("t-reg")
+          .classList.toggle("active", t === "reg");
+        document
+          .getElementById("t-admin")
+          .classList.toggle("active", t === "admin");
+      }
+
+      function getMonthIncomeTotal() {
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
         const targetMonthName = monthNames[selectedMonth];
-        document.getElementById('monthNameLabel').innerText = targetMonthName;
+        return cloudData.reduce((sum, m) => {
+          const dObj = parseAnyDate(m.date);
+          if (!dObj) return sum;
+          const dateMatch =
+            dObj.getMonth() === selectedMonth &&
+            dObj.getFullYear() === selectedYear;
+          const sheetMatch =
+            m.cleanSheetName &&
+            m.cleanSheetName
+              .toLowerCase()
+              .includes(targetMonthName.toLowerCase());
+          return dateMatch || sheetMatch
+            ? sum + parseFloat(m.amount || 0)
+            : sum;
+        }, 0);
+      }
 
-        let monthTotal = 0, todayTotal = 0;
-        listBody.innerHTML = ""; alertBody.innerHTML = "";
-        
-        const now = new Date(); now.setHours(0,0,0,0);
+      function renderAdmin() {
+        const listBody = document.getElementById("memberListBody");
+        const alertBody = document.getElementById("alertBody");
+        const query = document.getElementById("search").value.toLowerCase();
+        const fDateVal = document.getElementById("forecastDate").value;
+        const fDateObj = parseAnyDate(fDateVal);
+        if (fDateObj) fDateObj.setHours(0, 0, 0, 0);
+        const fDateStr = fDateObj ? fDateObj.toDateString() : "";
+
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const targetMonthName = monthNames[selectedMonth];
+        document.getElementById("monthNameLabel").innerText = targetMonthName;
+
+        let monthTotal = 0,
+          todayTotal = 0;
+        listBody.innerHTML = "";
+        alertBody.innerHTML = "";
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
         const todayStr = now.toDateString();
 
-        cloudData.sort((a,b) => parseAnyDate(a.date) - parseAnyDate(b.date));
+        cloudData.sort((a, b) => parseAnyDate(a.date) - parseAnyDate(b.date));
 
         const latest = {};
-        cloudData.forEach(m => { 
-            const exp = parseAnyDate(m.expiry);
-            if(!latest[m.memNo] || exp > parseAnyDate(latest[m.memNo].expiry)) latest[m.memNo] = m; 
+        cloudData.forEach((m) => {
+          const exp = parseAnyDate(m.expiry);
+          if (!latest[m.memNo] || exp > parseAnyDate(latest[m.memNo].expiry))
+            latest[m.memNo] = m;
         });
 
-        cloudData.forEach(m => {
-            const dObj = parseAnyDate(m.date);
-            const eObj = parseAnyDate(m.expiry);
-            if(!dObj || !eObj) return;
+        cloudData.forEach((m) => {
+          const dObj = parseAnyDate(m.date);
+          const eObj = parseAnyDate(m.expiry);
+          if (!dObj || !eObj) return;
 
-            const dateMatch = dObj.getMonth() === selectedMonth && dObj.getFullYear() === selectedYear;
-            const sheetMatch = m.cleanSheetName && m.cleanSheetName.toLowerCase().includes(targetMonthName.toLowerCase());
+          const dateMatch =
+            dObj.getMonth() === selectedMonth &&
+            dObj.getFullYear() === selectedYear;
+          const sheetMatch =
+            m.cleanSheetName &&
+            m.cleanSheetName
+              .toLowerCase()
+              .includes(targetMonthName.toLowerCase());
 
-            if(dateMatch || sheetMatch) {
-                monthTotal += parseFloat(m.amount || 0);
-                const searchMatch = m.name.toLowerCase().includes(query) || m.memNo.toString().toLowerCase().includes(query);
-                if(searchMatch) {
-                    listBody.innerHTML += `<tr>
-                        <td>${formatDateDisplay(m.date)}</td><td><b>${m.name}</b></td><td>${m.memNo}</td><td>${m.package}</td><td>₹${m.amount}</td>
-                        <td><a href="https://wa.me/91${m.contact}" target="_blank" style="color:var(--whatsapp); text-decoration:none; font-weight:bold;">${m.contact || ''}</a></td>
+          if (dateMatch || sheetMatch) {
+            monthTotal += parseFloat(m.amount || 0);
+            const searchMatch =
+              (m.name || "").toLowerCase().includes(query) ||
+              (m.memNo || "").toString().toLowerCase().includes(query);
+            if (searchMatch) {
+              listBody.innerHTML += `<tr>
+                        <td>${formatDateDisplay(m.date)}</td><td><b>${m.name || ""}</b></td><td>${m.memNo || ""}</td><td>${m.package || ""}</td><td>${formatCurrency(m.amount)}</td>
+                        <td><a href="https://wa.me/91${m.contact || ""}" target="_blank" style="color:var(--whatsapp); text-decoration:none; font-weight:bold;">${m.contact || ""}</a></td>
                         <td>${formatDateDisplay(m.expiry)}</td>
                         <td><button class="btn-action" style="background:var(--info)" onclick="triggerEdit('${m.rowId}', '${m.sheetName}')">Edit</button></td>
                     </tr>`;
-                }
             }
+          }
 
-            if(dObj.toDateString() === todayStr) todayTotal += parseFloat(m.amount || 0);
+          if (dObj.toDateString() === todayStr)
+            todayTotal += parseFloat(m.amount || 0);
 
-            if(latest[m.memNo].rowId === m.rowId && eObj.toDateString() === fDateStr) {
-                const profMsg = `Hello! This is a reminder from Sun Fitness Xpert Gym. Your membership is scheduled to expire today. To ensure uninterrupted access to the facility, please renew your membership at the desk. Thank you!`;
-                const waLink = m.contact ? `https://wa.me/91${m.contact.toString().replace(/\D/g,'')}?text=${encodeURIComponent(profMsg)}` : "#";
-
-                alertBody.innerHTML += `<tr>
-                    <td><b>${m.name}</b></td><td>${m.memNo}</td><td><span class="badge-today">${formatDateDisplay(m.expiry)}</span></td>
+          if (
+            latest[m.memNo] &&
+            latest[m.memNo].rowId === m.rowId &&
+            eObj.toDateString() === fDateStr
+          ) {
+            const profMsg =
+              "Hello! This is a reminder from Sun Fitness Xpert Gym. Your membership is scheduled to expire today. Please renew your membership at the desk. Thank you!";
+            const waLink = m.contact
+              ? `https://wa.me/91${m.contact.toString().replace(/\D/g, "")}?text=${encodeURIComponent(profMsg)}`
+              : "#";
+            alertBody.innerHTML += `<tr>
+                    <td><b>${m.name || ""}</b></td><td>${m.memNo || ""}</td><td><span class="badge-today">${formatDateDisplay(m.expiry)}</span></td>
                     <td>
                         <button class="btn-action" style="background:var(--success)" onclick="renewFromAdmin('${m.memNo}')">Renew</button>
-                        <button class="btn-action" style="background:#25D366" onclick="window.open('${waLink}', '_blank')">💬 Remind</button>
+                        <button class="btn-action" style="background:#25D366" onclick="window.open('${waLink}', '_blank')">Remind</button>
                     </td>
                 </tr>`;
-            }
+          }
         });
-        document.getElementById('monthCol').innerText = "₹" + monthTotal.toLocaleString('en-IN');
-        document.getElementById('todayCol').innerText = "₹" + todayTotal.toLocaleString('en-IN');
-    }
 
-    async function saveToCloud() {
+        if (!listBody.innerHTML)
+          listBody.innerHTML =
+            '<tr><td colspan="8" style="text-align:center; color:#64748b;">No member records for this month.</td></tr>';
+        if (!alertBody.innerHTML)
+          alertBody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center; color:#64748b;">No renewals on the selected date.</td></tr>';
+
+        document.getElementById("monthCol").innerText =
+          formatCurrency(monthTotal);
+        document.getElementById("todayCol").innerText =
+          formatCurrency(todayTotal);
+        renderExpenses(monthTotal);
+      }
+
+      function renderExpenses(monthIncomeTotal = null) {
+        const listBody = document.getElementById("expenseListBody");
+        const query = document
+          .getElementById("expenseSearch")
+          .value.toLowerCase();
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const targetMonthName = monthNames[selectedMonth];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let monthExpense = 0,
+          todayExpense = 0;
+
+        document.getElementById("expenseMonthNameLabel").innerText =
+          targetMonthName;
+        listBody.innerHTML = "";
+
+        const sortedExpenses = [...expenseData].sort(
+          (a, b) => parseAnyDate(b.date) - parseAnyDate(a.date),
+        );
+        sortedExpenses.forEach((expense) => {
+          const dObj = parseAnyDate(expense.date);
+          if (!dObj) return;
+
+          const matchesMonth =
+            dObj.getMonth() === selectedMonth &&
+            dObj.getFullYear() === selectedYear;
+          if (matchesMonth) monthExpense += parseFloat(expense.amount || 0);
+          if (dObj.toDateString() === today.toDateString())
+            todayExpense += parseFloat(expense.amount || 0);
+
+          const searchMatch =
+            !query ||
+            (expense.title || "").toLowerCase().includes(query) ||
+            (expense.category || "").toLowerCase().includes(query);
+          if (matchesMonth && searchMatch) {
+            const billLink = expense.billDataUrl
+              ? `<a class="link-btn" href="${expense.billDataUrl}" download="${expense.billName || "bill"}" target="_blank">Open Bill</a>`
+              : '<span style="color:#94a3b8;">No Bill</span>';
+            listBody.innerHTML += `<tr>
+                    <td>${formatDateDisplay(expense.date)}</td>
+                    <td><b>${expense.title}</b></td>
+                    <td>${expense.category || "General"}</td>
+                    <td>${expense.payMode}</td>
+                    <td>${formatCurrency(expense.amount)}</td>
+                    <td>${billLink}</td>
+                    <td><button class="btn-action danger-btn" onclick="deleteExpense('${expense.id}')">Delete</button></td>
+                </tr>`;
+          }
+        });
+
+        const incomeValue =
+          monthIncomeTotal !== null ? monthIncomeTotal : getMonthIncomeTotal();
+        document.getElementById("expenseMonthTotal").innerText =
+          formatCurrency(monthExpense);
+        document.getElementById("expenseTodayTotal").innerText =
+          formatCurrency(todayExpense);
+        document.getElementById("netCollectionTotal").innerText =
+          formatCurrency(incomeValue - monthExpense);
+
+        if (!listBody.innerHTML)
+          listBody.innerHTML =
+            '<tr><td colspan="7" style="text-align:center; color:#64748b;">No expense records for this month.</td></tr>';
+      }
+
+      async function saveToCloud() {
         const data = {
-            action: editContext ? "EDIT" : "SAVE",
-            rowId: editContext ? editContext.rowId : null,
-            sheetName: editContext ? editContext.sheetName : null,
-            date: document.getElementById('date').value, 
-            name: document.getElementById('name').value, 
-            memNo: document.getElementById('memNo').value,
-            package: document.getElementById('package').value, 
-            payMode: document.getElementById('payMode').value,
-            amount: document.getElementById('amt').value, 
-            contact: document.getElementById('contact').value,
-            expiry: updateExpiryPreview()
+          action: editContext ? "EDIT" : "SAVE",
+          rowId: editContext ? editContext.rowId : null,
+          sheetName: editContext ? editContext.sheetName : null,
+          date: document.getElementById("date").value,
+          name: document.getElementById("name").value,
+          memNo: document.getElementById("memNo").value,
+          package: document.getElementById("package").value,
+          payMode: document.getElementById("payMode").value,
+          amount: document.getElementById("amt").value,
+          contact: document.getElementById("contact").value,
+          expiry: updateExpiryPreview(),
         };
-        document.getElementById('status').innerText = "Syncing...";
-        await fetch(CLOUD_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+        document.getElementById("status").innerText = "Syncing...";
+        await fetch(CLOUD_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(data),
+        });
         location.reload();
-    }
+      }
 
-    function triggerEdit(rowId, sheetName) {
-        const m = cloudData.find(item => item.rowId == rowId && item.sheetName == sheetName);
-        editContext = { rowId, sheetName }; isRenewalMode = false;
-        document.getElementById('name').value = m.name; document.getElementById('memNo').value = m.memNo;
-        document.getElementById('contact').value = m.contact; document.getElementById('package').value = m.package;
-        document.getElementById('payMode').value = m.payMode || "";
-        document.getElementById('amt').value = m.amount; document.getElementById('date').value = new Date(m.date).toISOString().split('T')[0];
-        switchTab('reg');
-    }
+      async function saveExpense() {
+        const expenseDate = document.getElementById("expenseDate").value;
+        const expenseTitle = document
+          .getElementById("expenseTitle")
+          .value.trim();
+        const expenseAmount = document.getElementById("expenseAmount").value;
+        const expensePayMode = document.getElementById("expensePayMode").value;
+        const expenseCategory =
+          document.getElementById("expenseCategory").value;
+        const billFile = document.getElementById("expenseBill").files[0];
+        const status = document.getElementById("expenseStatus");
 
-    function renewFromAdmin(id) {
-        const m = cloudData.find(item => item.memNo == id);
-        editContext = null; isRenewalMode = true;
-        document.getElementById('name').value = m.name; document.getElementById('memNo').value = m.memNo;
-        document.getElementById('contact').value = m.contact; document.getElementById('package').value = m.package;
-        document.getElementById('payMode').value = ""; // Reset for new payment
-        document.getElementById('amt').value = m.amount; document.getElementById('date').valueAsDate = new Date();
-        updateExpiryPreview(); switchTab('reg');
-    }
+        if (
+          !expenseDate ||
+          !expenseTitle ||
+          !expenseAmount ||
+          !expensePayMode
+        ) {
+          status.style.color = "var(--danger)";
+          status.innerText =
+            "Please fill expense date, head, amount, and payment mode.";
+          return;
+        }
 
-    function updateExpiryPreview() {
-        const pkg = document.getElementById('package').value;
-        const joinDate = document.getElementById('date').value;
-        if(!pkg || !joinDate) return "";
+        status.style.color = "var(--primary)";
+        status.innerText = "Saving expense...";
+
+        try {
+          const bill = await readBillFile(billFile);
+          expenseData.push({
+            id: `exp-${Date.now()}`,
+            date: expenseDate,
+            title: expenseTitle,
+            amount: expenseAmount,
+            payMode: expensePayMode,
+            category: expenseCategory,
+            billName: bill ? bill.name : "",
+            billDataUrl: bill ? bill.dataUrl : "",
+            billType: bill ? bill.type : "",
+          });
+          saveExpensesToStorage();
+          resetExpenseForm();
+          status.style.color = "var(--success)";
+          status.innerText = "Expense saved successfully.";
+          renderExpenses();
+        } catch (e) {
+          status.style.color = "var(--danger)";
+          status.innerText = "Bill upload failed. Please try a smaller file.";
+        }
+      }
+
+      function deleteExpense(id) {
+        if (!confirm("Delete this expense record?")) return;
+        expenseData = expenseData.filter((item) => item.id !== id);
+        saveExpensesToStorage();
+        renderExpenses();
+      }
+
+      function triggerEdit(rowId, sheetName) {
+        const m = cloudData.find(
+          (item) => item.rowId == rowId && item.sheetName == sheetName,
+        );
+        if (!m) return;
+        editContext = { rowId, sheetName };
+        isRenewalMode = false;
+        document.getElementById("name").value = m.name;
+        document.getElementById("memNo").value = m.memNo;
+        document.getElementById("contact").value = m.contact;
+        document.getElementById("package").value = m.package;
+        document.getElementById("payMode").value = m.payMode || "";
+        document.getElementById("amt").value = m.amount;
+        document.getElementById("date").value = new Date(m.date)
+          .toISOString()
+          .split("T")[0];
+        switchTab("reg");
+      }
+
+      function renewFromAdmin(id) {
+        const m = cloudData.find((item) => item.memNo == id);
+        if (!m) return;
+        editContext = null;
+        isRenewalMode = true;
+        document.getElementById("name").value = m.name;
+        document.getElementById("memNo").value = m.memNo;
+        document.getElementById("contact").value = m.contact;
+        document.getElementById("package").value = m.package;
+        document.getElementById("payMode").value = "";
+        document.getElementById("amt").value = m.amount;
+        document.getElementById("date").valueAsDate = new Date();
+        updateExpiryPreview();
+        switchTab("reg");
+      }
+
+      function updateExpiryPreview() {
+        const pkg = document.getElementById("package").value;
+        const joinDate = document.getElementById("date").value;
+        if (!pkg || !joinDate) return "";
         let d = new Date(joinDate);
-        let months = parseInt(pkg.match(/\d+/) || 1);
+        let months = parseInt((pkg.match(/\d+/) || [1])[0], 10);
         d.setMonth(d.getMonth() + months);
-        const exp = d.toISOString().split('T')[0];
-        document.getElementById('expiryPreview').innerText = "EXPIRY: " + formatDateDisplay(exp);
+        const exp = d.toISOString().split("T")[0];
+        document.getElementById("expiryPreview").innerText =
+          "EXPIRY: " + formatDateDisplay(exp);
         return exp;
-    }
+      }
 
-    function resetForm() {
-        editContext = null; isRenewalMode = false;
-        ['name', 'memNo', 'amt', 'contact', 'package', 'payMode'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('date').valueAsDate = new Date();
-    }
+      function resetForm() {
+        editContext = null;
+        isRenewalMode = false;
+        ["name", "memNo", "amt", "contact", "package", "payMode"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("date").valueAsDate = new Date();
+        document.getElementById("expiryPreview").innerText = "";
+        checkDuplicateID();
+      }
 
-    window.onload = () => { buildMonthNav(); fetchFromCloud(); };
-</script>
-</body>
+      function resetExpenseForm() {
+        document.getElementById("expenseDate").valueAsDate = new Date();
+        document.getElementById("expenseTitle").value = "";
+        document.getElementById("expenseAmount").value = "";
+        document.getElementById("expensePayMode").value = "";
+        document.getElementById("expenseCategory").value = "General";
+        document.getElementById("expenseBill").value = "";
+      }
+
+      function downloadRenewalPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const currentMonthName = monthNames[selectedMonth];
+
+        doc.setFontSize(18);
+        doc.text("Sun Fitness Xpert Gym", 105, 15, { align: "center" });
+        doc.setFontSize(12);
+        doc.text(
+          `Renewal List for ${currentMonthName} ${selectedYear}`,
+          105,
+          22,
+          { align: "center" },
+        );
+
+        const renewalData = [];
+        const latest = {};
+        cloudData.forEach((m) => {
+          const exp = parseAnyDate(m.expiry);
+          if (!latest[m.memNo] || exp > parseAnyDate(latest[m.memNo].expiry))
+            latest[m.memNo] = m;
+        });
+
+        Object.values(latest).forEach((m) => {
+          const eObj = parseAnyDate(m.expiry);
+          if (
+            eObj &&
+            eObj.getMonth() === selectedMonth &&
+            eObj.getFullYear() === selectedYear
+          ) {
+            renewalData.push([
+              m.memNo,
+              m.name,
+              m.contact || "N/A",
+              formatDateDisplay(m.expiry),
+            ]);
+          }
+        });
+
+        renewalData.sort(
+          (a, b) =>
+            new Date(a[3].split("/").reverse().join("-")) -
+            new Date(b[3].split("/").reverse().join("-")),
+        );
+        if (renewalData.length === 0) {
+          alert("No memberships expiring in the selected month.");
+          return;
+        }
+
+        doc.autoTable({
+          head: [["ID", "Name", "Contact", "Expiry Date"]],
+          body: renewalData,
+          startY: 30,
+          theme: "grid",
+          headStyles: { fillColor: [26, 42, 108] },
+          styles: { fontSize: 10 },
+        });
+
+        doc.save(`Gym_Renewals_${currentMonthName}_${selectedYear}.pdf`);
+      }
+
+      window.onload = () => {
+        buildMonthNav();
+        loadExpenses();
+        fetchFromCloud();
+        renderExpenses();
+      };
+    </script>
+  </body>
 </html>
