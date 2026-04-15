@@ -17,19 +17,16 @@
         --sheet: #1d6f42;
         --pdf: #c0392b;
       }
-
       body {
         font-family: "Segoe UI", sans-serif;
         background: var(--bg);
         margin: 0;
         padding: 10px;
       }
-
       .container {
         max-width: 1400px;
         margin: auto;
       }
-
       .tabs {
         display: flex;
         background: #fff;
@@ -38,7 +35,6 @@
         margin-bottom: 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
-
       .tab {
         flex: 1;
         padding: 15px;
@@ -48,12 +44,10 @@
         color: #888;
         transition: 0.3s;
       }
-
       .tab.active {
         background: var(--primary);
         color: white;
       }
-
       .card {
         background: white;
         padding: 25px;
@@ -61,7 +55,6 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         margin-bottom: 20px;
       }
-
       input,
       select,
       button {
@@ -73,7 +66,6 @@
         box-sizing: border-box;
         font-size: 16px;
       }
-
       button {
         background: var(--primary);
         color: white;
@@ -81,16 +73,13 @@
         font-weight: bold;
         cursor: pointer;
       }
-
       button:disabled {
         background: #ccc;
         cursor: not-allowed;
       }
-
       .hidden {
         display: none;
       }
-
       .month-nav {
         display: flex;
         gap: 8px;
@@ -99,7 +88,6 @@
         margin-bottom: 15px;
         scrollbar-width: none;
       }
-
       .month-pill {
         background: #fff;
         border: 1px solid #ddd;
@@ -111,32 +99,27 @@
         font-weight: bold;
         color: #555;
       }
-
       .month-pill.active {
         background: var(--primary);
         color: white;
       }
-
       .scroll-table {
         overflow-x: auto;
         max-height: 450px;
         border-radius: 8px;
       }
-
       table {
         width: 100%;
         border-collapse: collapse;
         font-size: 13px;
         background: white;
       }
-
       th,
       td {
         padding: 12px;
         text-align: left;
         border-bottom: 1px solid #eee;
       }
-
       th {
         background: #f8f9fa;
         position: sticky;
@@ -146,7 +129,6 @@
         font-size: 11px;
         text-transform: uppercase;
       }
-
       .badge-today {
         background: #fee2e2;
         color: #991b1b;
@@ -156,7 +138,6 @@
         font-size: 11px;
         font-weight: bold;
       }
-
       .btn-action {
         width: auto;
         padding: 6px 12px;
@@ -167,7 +148,6 @@
         cursor: pointer;
         margin-right: 2px;
       }
-
       #id-warning {
         color: var(--danger);
         font-size: 11px;
@@ -175,19 +155,16 @@
         display: none;
         margin-bottom: 5px;
       }
-
       .btn-pdf {
         background-color: var(--pdf) !important;
         margin-bottom: 10px;
       }
-
       .admin-subtabs {
         display: flex;
         gap: 10px;
         margin-bottom: 20px;
         flex-wrap: wrap;
       }
-
       .admin-subtab {
         width: auto;
         padding: 10px 18px;
@@ -195,49 +172,79 @@
         color: #334155;
         border-radius: 999px;
       }
-
       .admin-subtab.active {
         background: var(--primary);
         color: white;
       }
-
       .summary-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 15px;
         margin-bottom: 20px;
       }
-
       .summary-box {
         background: #f0f4ff;
         padding: 15px;
         border-radius: 10px;
         text-align: center;
       }
-
       .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 15px;
       }
-
       .muted-note {
         font-size: 12px;
         color: #64748b;
         margin-top: -2px;
         margin-bottom: 10px;
       }
-
       .link-btn {
         color: var(--info);
         font-weight: bold;
         text-decoration: none;
       }
-
       .danger-btn {
         background: var(--danger);
       }
-
+      .renewal-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .renewal-picker {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        width: 1px;
+        height: 1px;
+      }
+      .renewal-date-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        background: #fff;
+      }
+      .renewal-current-date {
+        font-weight: 800;
+        color: var(--primary);
+        min-width: 120px;
+      }
+      .calendar-btn {
+        width: auto;
+        margin: 0;
+        padding: 8px 10px;
+        background: #fff;
+        color: #111827;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 18px;
+        line-height: 1;
+      }
       @media (max-width: 768px) {
         .form-grid {
           grid-template-columns: 1fr;
@@ -245,7 +252,6 @@
       }
     </style>
   </head>
-
   <body>
     <div class="container">
       <div class="tabs">
@@ -318,6 +324,62 @@
           Clear Form
         </button>
         <p id="status" style="text-align: center; font-weight: bold"></p>
+
+        <div
+          id="renewalDeskPanel"
+          style="
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 10px;
+              flex-wrap: wrap;
+            "
+          >
+            <h3 style="color: #9b2c2c; margin: 0">Upcoming Renewals</h3>
+            <div class="renewal-toolbar">
+              <input
+                type="date"
+                id="reminderDatePicker"
+                class="renewal-picker"
+                onchange="changeReminderDateFromPicker()"
+              />
+              <div class="renewal-date-chip">
+                <span id="todayDateLabel" class="renewal-current-date"></span>
+                <button
+                  type="button"
+                  class="calendar-btn"
+                  onclick="openReminderCalendar()"
+                  aria-label="Choose renewal date"
+                >
+                  📅
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                  <th>Expiry</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="publicAlertBody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="adminView" class="hidden">
@@ -373,47 +435,6 @@
             </div>
 
             <div class="month-nav" id="monthNav"></div>
-
-            <div
-              id="alertPanel"
-              style="
-                background: #fff5f5;
-                border: 2px solid #feb2b2;
-                border-radius: 12px;
-                padding: 15px;
-                margin-bottom: 20px;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  margin-bottom: 10px;
-                "
-              >
-                <h3 style="color: #9b2c2c; margin: 0">Renewals Forecast</h3>
-                <input
-                  type="date"
-                  id="forecastDate"
-                  style="width: auto; padding: 5px"
-                  onchange="renderAdmin()"
-                />
-              </div>
-              <div class="scroll-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>ID</th>
-                      <th>Expiry</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="alertBody"></tbody>
-                </table>
-              </div>
-            </div>
 
             <input
               type="text"
@@ -583,17 +604,29 @@
       const CLOUD_URL =
         "https://script.google.com/macros/s/AKfycbwWsk3sz0TQ9_N-FK_p80E8gMNjdYFftTANUKEPHJvNm6c0JfgGvpTOpZpkTKedc-zddw/exec";
       const EXPENSE_STORAGE_KEY = "gymExpenses";
+      const GYM_NAME = "Sun Fitness Xpert Gym";
+      const GYM_ADDRESS =
+        "Ground Floor, Shiv Chowk, 2979/1B, Block 7, Ranjit Nagar, South Patel Nagar, New Delhi, Delhi 110008";
+      const BILL_LOGO_DATA_URL =
+        "data:image/jpeg;base64,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";
 
       let cloudData = [];
       let expenseData = [];
       let editContext = null;
       let isRenewalMode = false;
+      let reminderViewDate = new Date();
       let selectedMonth = new Date().getMonth();
       let selectedYear = new Date().getFullYear();
 
       document.getElementById("date").valueAsDate = new Date();
-      document.getElementById("forecastDate").valueAsDate = new Date();
       document.getElementById("expenseDate").valueAsDate = new Date();
+      reminderViewDate.setHours(0, 0, 0, 0);
+      document.getElementById("reminderDatePicker").value = reminderViewDate
+        .toISOString()
+        .split("T")[0];
+      document.getElementById("todayDateLabel").innerText = formatDateDisplay(
+        new Date(),
+      );
 
       function parseAnyDate(dateStr) {
         if (!dateStr) return null;
@@ -613,6 +646,82 @@
 
       function formatCurrency(value) {
         return "Rs. " + Number(value || 0).toLocaleString("en-IN");
+      }
+
+      function getLatestMemberships() {
+        const latest = {};
+        cloudData.forEach((m) => {
+          const exp = parseAnyDate(m.expiry);
+          if (!exp || !m.memNo) return;
+          if (!latest[m.memNo] || exp > parseAnyDate(latest[m.memNo].expiry))
+            latest[m.memNo] = m;
+        });
+        return Object.values(latest);
+      }
+
+      function buildReminderMessage(member) {
+        return `Hello ${member.name || ""}, this is a reminder from Sun Fitness Xpert Gym. Your membership will expire on ${formatDateDisplay(member.expiry)}. Please renew before the expiry date to continue your workouts without interruption. Thank you!`;
+      }
+
+      function getReminderLink(member) {
+        if (!member.contact) return "#";
+        return `https://wa.me/91${member.contact.toString().replace(/\D/g, "")}?text=${encodeURIComponent(buildReminderMessage(member))}`;
+      }
+
+      function openReminderCalendar() {
+        const picker = document.getElementById("reminderDatePicker");
+        if (picker.showPicker) {
+          picker.showPicker();
+        } else {
+          picker.focus();
+          picker.click();
+        }
+      }
+
+      function changeReminderDateFromPicker() {
+        const pickerValue = document.getElementById("reminderDatePicker").value;
+        if (!pickerValue) return;
+        reminderViewDate = new Date(pickerValue);
+        reminderViewDate.setHours(0, 0, 0, 0);
+        renderUpcomingRenewals();
+      }
+
+      function renderUpcomingRenewals() {
+        const alertBody = document.getElementById("publicAlertBody");
+        const picker = document.getElementById("reminderDatePicker");
+        const targetDate = new Date(reminderViewDate);
+        targetDate.setHours(0, 0, 0, 0);
+        picker.value = targetDate.toISOString().split("T")[0];
+        document.getElementById("todayDateLabel").innerText =
+          formatDateDisplay(targetDate);
+        alertBody.innerHTML = "";
+
+        const upcomingMembers = getLatestMemberships()
+          .filter((member) => {
+            const expiry = parseAnyDate(member.expiry);
+            if (!expiry) return false;
+            expiry.setHours(0, 0, 0, 0);
+            return expiry.getTime() === targetDate.getTime();
+          })
+          .sort((a, b) => parseAnyDate(a.expiry) - parseAnyDate(b.expiry));
+
+        upcomingMembers.forEach((member) => {
+          const waLink = getReminderLink(member);
+          alertBody.innerHTML += `<tr>
+                <td><b>${member.name || ""}</b></td>
+                <td>${member.memNo || ""}</td>
+                <td><span class="badge-today">${formatDateDisplay(member.expiry)}</span></td>
+                <td>
+                    <button class="btn-action" style="background:var(--success)" onclick="renewFromAdmin('${member.memNo}')">Renew</button>
+                    <button class="btn-action" style="background:#25D366" onclick="window.open('${waLink}', '_blank')">Remind</button>
+                </td>
+            </tr>`;
+        });
+
+        if (!alertBody.innerHTML) {
+          alertBody.innerHTML =
+            '<tr><td colspan="4" style="text-align:center; color:#64748b;">No renewals on the selected date.</td></tr>';
+        }
       }
 
       function checkDuplicateID() {
@@ -718,9 +827,11 @@
         try {
           const res = await fetch(CLOUD_URL);
           cloudData = await res.json();
+          renderUpcomingRenewals();
           renderAdmin();
         } catch (e) {
           console.error("Sync Error", e);
+          renderUpcomingRenewals();
           renderAdmin();
         }
       }
@@ -782,12 +893,7 @@
 
       function renderAdmin() {
         const listBody = document.getElementById("memberListBody");
-        const alertBody = document.getElementById("alertBody");
         const query = document.getElementById("search").value.toLowerCase();
-        const fDateVal = document.getElementById("forecastDate").value;
-        const fDateObj = parseAnyDate(fDateVal);
-        if (fDateObj) fDateObj.setHours(0, 0, 0, 0);
-        const fDateStr = fDateObj ? fDateObj.toDateString() : "";
 
         const monthNames = [
           "Jan",
@@ -809,20 +915,12 @@
         let monthTotal = 0,
           todayTotal = 0;
         listBody.innerHTML = "";
-        alertBody.innerHTML = "";
 
         const now = new Date();
         now.setHours(0, 0, 0, 0);
         const todayStr = now.toDateString();
 
         cloudData.sort((a, b) => parseAnyDate(a.date) - parseAnyDate(b.date));
-
-        const latest = {};
-        cloudData.forEach((m) => {
-          const exp = parseAnyDate(m.expiry);
-          if (!latest[m.memNo] || exp > parseAnyDate(latest[m.memNo].expiry))
-            latest[m.memNo] = m;
-        });
 
         cloudData.forEach((m) => {
           const dObj = parseAnyDate(m.date);
@@ -848,40 +946,21 @@
                         <td>${formatDateDisplay(m.date)}</td><td><b>${m.name || ""}</b></td><td>${m.memNo || ""}</td><td>${m.package || ""}</td><td>${formatCurrency(m.amount)}</td>
                         <td><a href="https://wa.me/91${m.contact || ""}" target="_blank" style="color:var(--whatsapp); text-decoration:none; font-weight:bold;">${m.contact || ""}</a></td>
                         <td>${formatDateDisplay(m.expiry)}</td>
-                        <td><button class="btn-action" style="background:var(--info)" onclick="triggerEdit('${m.rowId}', '${m.sheetName}')">Edit</button></td>
+                        <td>
+                          <button class="btn-action" style="background:var(--pdf)" onclick="downloadMembershipBill('${m.rowId}', '${m.sheetName}')">Bill PDF</button>
+                          <button class="btn-action" style="background:var(--info)" onclick="triggerEdit('${m.rowId}', '${m.sheetName}')">Edit</button>
+                        </td>
                     </tr>`;
             }
           }
 
           if (dObj.toDateString() === todayStr)
             todayTotal += parseFloat(m.amount || 0);
-
-          if (
-            latest[m.memNo] &&
-            latest[m.memNo].rowId === m.rowId &&
-            eObj.toDateString() === fDateStr
-          ) {
-            const profMsg =
-              "Hello! This is a reminder from Sun Fitness Xpert Gym. Your membership is scheduled to expire today. Please renew your membership at the desk. Thank you!";
-            const waLink = m.contact
-              ? `https://wa.me/91${m.contact.toString().replace(/\D/g, "")}?text=${encodeURIComponent(profMsg)}`
-              : "#";
-            alertBody.innerHTML += `<tr>
-                    <td><b>${m.name || ""}</b></td><td>${m.memNo || ""}</td><td><span class="badge-today">${formatDateDisplay(m.expiry)}</span></td>
-                    <td>
-                        <button class="btn-action" style="background:var(--success)" onclick="renewFromAdmin('${m.memNo}')">Renew</button>
-                        <button class="btn-action" style="background:#25D366" onclick="window.open('${waLink}', '_blank')">Remind</button>
-                    </td>
-                </tr>`;
-          }
         });
 
         if (!listBody.innerHTML)
           listBody.innerHTML =
             '<tr><td colspan="8" style="text-align:center; color:#64748b;">No member records for this month.</td></tr>';
-        if (!alertBody.innerHTML)
-          alertBody.innerHTML =
-            '<tr><td colspan="4" style="text-align:center; color:#64748b;">No renewals on the selected date.</td></tr>';
 
         document.getElementById("monthCol").innerText =
           formatCurrency(monthTotal);
@@ -1114,6 +1193,92 @@
         document.getElementById("expensePayMode").value = "";
         document.getElementById("expenseCategory").value = "General";
         document.getElementById("expenseBill").value = "";
+      }
+
+      function downloadMembershipBill(rowId, sheetName) {
+        const member = cloudData.find(
+          (item) => item.rowId == rowId && item.sheetName == sheetName,
+        );
+        if (!member) {
+          alert("Member record not found.");
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const billDate = formatDateDisplay(member.date);
+        const expiryDate = formatDateDisplay(member.expiry);
+        const packageLabel = `${member.package || ""} Month${String(member.package || "") === "1" ? "" : "s"}`;
+        const amountLabel = formatCurrency(member.amount);
+
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(12, 12, 186, 270, 6, 6, "F");
+        doc.addImage(BILL_LOGO_DATA_URL, "JPEG", 18, 18, 28, 28);
+
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(26, 42, 108);
+        doc.setFontSize(20);
+        doc.text(GYM_NAME, 52, 28);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(71, 85, 105);
+        const addressLines = doc.splitTextToSize(GYM_ADDRESS, 130);
+        doc.text(addressLines, 52, 35);
+
+        doc.setDrawColor(203, 213, 225);
+        doc.line(18, 54, 192, 54);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.setTextColor(17, 24, 39);
+        doc.text("Membership Bill", 18, 66);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Bill Date: ${billDate}`, 18, 74);
+        doc.text(`Member ID: ${member.memNo || ""}`, 145, 74);
+
+        doc.autoTable({
+          startY: 82,
+          theme: "grid",
+          head: [["Field", "Details"]],
+          body: [
+            ["Member Name", member.name || ""],
+            ["Contact Number", member.contact || "N/A"],
+            ["Package", packageLabel],
+            ["Payment Mode", member.payMode || "N/A"],
+            ["Joining / Renewal Date", billDate],
+            ["Membership Expiry", expiryDate],
+            ["Amount Paid", amountLabel],
+          ],
+          headStyles: { fillColor: [26, 42, 108] },
+          styles: { fontSize: 11, cellPadding: 4 },
+          columnStyles: {
+            0: { fontStyle: "bold", cellWidth: 62 },
+            1: { cellWidth: 108 },
+          },
+        });
+
+        const finalY = doc.lastAutoTable.finalY || 150;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(71, 85, 105);
+        doc.text(
+          "Thank you for choosing Sun Fitness Xpert Gym.",
+          18,
+          finalY + 18,
+        );
+
+        doc.setDrawColor(203, 213, 225);
+        doc.line(18, 250, 90, 250);
+        doc.line(120, 250, 192, 250);
+        doc.setFontSize(10);
+        doc.text("Authorized Signature", 18, 257);
+        doc.text("Member Signature", 138, 257);
+
+        const safeName = (member.name || "member").replace(/[^\w\-]+/g, "_");
+        doc.save(`Membership_Bill_${safeName}_${member.memNo || "ID"}.pdf`);
       }
 
       function downloadRenewalPDF() {
